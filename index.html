@@ -42,7 +42,19 @@
 		<script src="./index_files/geometry.js"></script>
 
 		<script>
+			function randFloat ( low, high ) {
 
+				return low + Math.random() * ( high - low );
+
+			}
+			function clamp(num, min, max) {
+			  return num <= min ? min : num >= max ? max : num;
+			}
+			function getRandomInt(min, max) {
+			  min = Math.ceil(min);
+			  max = Math.floor(max);
+			  return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+			}
 			//document.getElementById( 'newWindow' ).href += window.location.hash;
 
 			var gui = new dat.GUI();
@@ -58,7 +70,7 @@
 			document.body.appendChild( renderer.domElement );
 
 			var orbit = new THREE.OrbitControls( camera, renderer.domElement );
-			orbit.enableZoom = false;
+			//orbit.enableZoom = false;
 
 			var lights = [];
 			lights[ 0 ] = new THREE.PointLight( 0xffffff, 1, 0 );
@@ -74,13 +86,65 @@
 			scene.add( lights[ 2 ] );
 
 			var group = new THREE.Group();
-
-			var geometry =  new THREE.TorusGeometry( 4, 2.8, 0, 1 );
+			var s = 10;
+			var r = 0.5;
+			var c = 10;
+			var outerR = 8;
+			var innerR = 6;
+			//var geometry =  new THREE.TorusGeometry( 4, 2.8, 0, 1 );
 			//geometry.addAttribute( 'position', new THREE.Float32BufferAttribute( [], 3 ) );
-			var geometry = new THREE.TorusGeometry( 7, 5, 16, 100 );
-			var material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
-			var torus = new THREE.Mesh( geometry, material );
-			group.add( torus );
+			var geometry = new THREE.TorusGeometry( outerR, innerR, 16, 100 );
+			var material = new THREE.MeshPhongMaterial( { color: 0x9b8e5e, emissive: 0x111111, side: THREE.DoubleSide, flatShading: false } );
+
+			// var bigGeometry = new THREE.TorusGeometry(10, 7, 32, 100 );
+
+			// var bigTorus = new THREE.Mesh( bigGeometry, material );
+
+			// group.add( bigTorus );
+				geometry = new THREE.TorusGeometry( outerR, innerR, 16, 100 );
+
+				var torus = new THREE.Mesh( geometry, material );
+				
+		
+				group.add( torus );
+								geometry = new THREE.TorusGeometry( outerR, innerR, 16, 100 );
+
+				var torus = new THREE.Mesh( geometry, material );
+				
+		
+				group.add( torus );
+								geometry = new THREE.TorusGeometry( outerR, innerR, 16, 100 );
+
+				var torus = new THREE.Mesh( geometry, material );
+				
+		
+				group.add( torus );
+
+			for (var i = 3; i< 13; i++ ){
+				var f = randFloat(1,(13-i)/3.0);
+				geometry = new THREE.TorusGeometry(f, f*0.7, 16, 100 );
+				var m = ((getRandomInt(0,2)*2)-1);
+				torus = new THREE.Mesh( geometry, material );
+				
+				torus.position.x += (outerR + randFloat(0,s/2)) * m;
+				m = ((getRandomInt(0,2)*2)-1);
+				torus.position.y += (outerR + randFloat(0,s/2))* m;
+				m = ((getRandomInt(0,2)*2)-1);
+				torus.position.z += (outerR + randFloat(0,s))* m;//Math.cos((i/13)* Math.PI * 2)*10;//randFloat(2 + (c - clamp(i,c,15))*s*3,i*s);
+				torus.rotation.x += randFloat(-r,r);
+				torus.rotation.y += randFloat(-r,r);
+				torus.rotation.z += randFloat(-r,r);
+				
+				group.add( torus );
+
+			}
+			
+				// geometry = new THREE.TorusGeometry(10, 7, 16, 100 );
+
+				// torus = new THREE.Mesh( geometry, material );
+				
+		
+				// group.add( torus );
 						
 
 			//var geometry2 = new THREE.TorusGeometry( 8, 5, 4, 100 );
@@ -88,11 +152,11 @@
 			//var schmear = new THREE.Mesh( geometry2, material2 );
 			//group.add( schmear );
 
-			var lineMaterial = new THREE.LineBasicMaterial( { color: 0x9b8e5e, transparent: true, opacity: 0.1 } );
-			var meshMaterial = new THREE.MeshPhongMaterial( { color: 0x9b8e5e, emissive: 0x111111, side: THREE.DoubleSide, flatShading: true } );
+			// var lineMaterial = new THREE.LineBasicMaterial( { color: 0x9b8e5e, transparent: true, opacity: 0.1 } );
+			// var meshMaterial = new THREE.MeshPhongMaterial( { color: 0x9b8e5e, emissive: 0x111111, side: THREE.DoubleSide, flatShading: true } );
 
-			group.add( new THREE.LineSegments( geometry, lineMaterial ) );
-			group.add( new THREE.Mesh( geometry, meshMaterial ) );
+			//group.add( new THREE.LineSegments( geometry, lineMaterial ) );
+			//group.add( new THREE.Mesh( geometry, meshMaterial ) );
 
 			var options = chooseFromHash( group );
 
